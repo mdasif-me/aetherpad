@@ -1,4 +1,5 @@
 'use client';
+import FontFamily from '@tiptap/extension-font-family';
 import Image from '@tiptap/extension-image';
 import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
@@ -6,11 +7,13 @@ import TableHeader from '@tiptap/extension-table-header';
 import TableRow from '@tiptap/extension-table-row';
 import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
+import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import ImageResize from 'tiptap-extension-resize-image';
 import { useEditorStore } from '../../../store/use-editor-store';
+
 const Editor = () => {
   const { setEditor } = useEditorStore();
   const editor = useEditor({
@@ -52,6 +55,8 @@ const Editor = () => {
       Image,
       ImageResize,
       Underline,
+      TextStyle,
+      FontFamily,
       TaskItem.configure({
         nested: true,
       }),
