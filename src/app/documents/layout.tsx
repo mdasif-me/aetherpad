@@ -3,7 +3,14 @@ interface IDocumentLayoutProps {
 }
 
 const DocumentLayout = ({ children }: IDocumentLayoutProps) => {
-  return <div>{children}</div>;
+  return (
+    <div>
+      <nav className='bg-accent text-primary p-8 w-full flex justify-center items-center gap-10'>
+        Navigation Bar
+      </nav>
+      {children}
+    </div>
+  );
 };
 
 export default DocumentLayout;

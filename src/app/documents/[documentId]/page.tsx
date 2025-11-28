@@ -1,5 +1,5 @@
-import { Button } from '../../../components/ui/button';
 import Editor from './editor';
+import Toolbar from './toolbar';
 
 interface IDocumentIdProps {
   params: Promise<{ documentId: string }>;
@@ -7,13 +7,10 @@ interface IDocumentIdProps {
 
 const DocumentIdPage = async ({ params }: IDocumentIdProps) => {
   const { documentId } = await params;
-
+  console.log('Document ID:', documentId);
   return (
     <div className='min-h-screen'>
-      <nav className='bg-accent text-primary p-8 w-full flex justify-center items-center gap-10'>
-        Navigation Bar
-        <Button>Document ID: {documentId}</Button>
-      </nav>
+      <Toolbar />
       <Editor />
     </div>
   );
