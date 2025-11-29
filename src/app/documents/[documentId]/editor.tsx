@@ -10,6 +10,7 @@ import TableHeader from '@tiptap/extension-table-header';
 import TableRow from '@tiptap/extension-table-row';
 import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
+import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import { EditorContent, useEditor } from '@tiptap/react';
@@ -131,6 +132,9 @@ const Editor = () => {
             return false;
           }
         },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
       }),
       Highlight.configure({
         multicolor: true,

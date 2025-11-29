@@ -2,6 +2,10 @@
 
 import { type Level } from '@tiptap/extension-heading';
 import {
+  AlignCenterIcon,
+  AlignJustifyIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
   BoldIcon,
   ChevronDownIcon,
   HighlighterIcon,
@@ -40,6 +44,58 @@ import { Input } from '../../../components/ui/input';
 import { Separator } from '../../../components/ui/separator';
 import { cn } from '../../../lib/utils';
 import { useEditorStore } from '../../../store/use-editor-store';
+
+const AlignButton = () => {
+  const { editor } = useEditorStore();
+
+  const alignments = [
+    {
+      label: 'Align Left',
+      value: 'left',
+      icon: AlignLeftIcon,
+    },
+    {
+      label: 'Align Center',
+      value: 'center',
+      icon: AlignCenterIcon,
+    },
+    {
+      label: 'Align Right',
+      value: 'right',
+      icon: AlignRightIcon,
+    },
+    {
+      label: 'Justify',
+      value: 'justify',
+      icon: AlignJustifyIcon,
+    },
+  ];
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className='h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm'>
+          <AlignLeftIcon className='size-4 mb-0.5' />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className='p-1 flex flex-col gap-y-1'>
+        {alignments.map(({ label, value, icon: Icon }) => (
+          <button
+            className={cn(
+              'flex items-center gap-x-2 px-2 py-1 rounded-sm hover:bg-neutral-200/80',
+              editor?.isActive({ textAlign: value }) && 'bg-neutral-200/80'
+            )}
+            key={value}
+            onClick={() => editor?.chain().focus().setTextAlign(value).run()}
+          >
+            <Icon className='size-4' />
+            <span className='text-sm'>{label}</span>
+          </button>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const ImageButton = () => {
   const { editor } = useEditorStore();
@@ -453,7 +509,7 @@ const Toolbar = () => {
       <Separator orientation='vertical' className='h-6 bg-neutral-300' />
       <LinkButton />
       <ImageButton />
-      {/* //TODO: Align */}
+      <AlignButton />
       {/* //TODO: line height */}
       {/* //TODO: List */}
       <Separator orientation='vertical' className='h-6 bg-neutral-300' />
