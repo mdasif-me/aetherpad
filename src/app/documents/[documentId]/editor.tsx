@@ -1,5 +1,7 @@
 'use client';
+import { Color } from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
+import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
@@ -57,6 +59,10 @@ const Editor = () => {
       Underline,
       TextStyle,
       FontFamily,
+      Color,
+      Highlight.configure({
+        multicolor: true,
+      }),
       TaskItem.configure({
         nested: true,
       }),
