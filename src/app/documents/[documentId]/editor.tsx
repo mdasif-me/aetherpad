@@ -16,8 +16,8 @@ import Underline from '@tiptap/extension-underline';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import ImageResize from 'tiptap-extension-resize-image';
+import { FontSizeExtension } from '../../../extensions/font-size';
 import { useEditorStore } from '../../../store/use-editor-store';
-
 const Editor = () => {
   const { setEditor } = useEditorStore();
   const editor = useEditor({
@@ -56,6 +56,7 @@ const Editor = () => {
     },
     extensions: [
       StarterKit,
+      FontSizeExtension,
       Image,
       ImageResize,
       Underline,
