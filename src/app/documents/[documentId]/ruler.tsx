@@ -1,12 +1,84 @@
+import { useRef, useState } from 'react';
+import { FaCaretDown } from 'react-icons/fa';
 const markers = Array.from({ length: 83 }, (_, i) => i);
 
 export default function Ruler() {
+  const [leftMargin, setLeftMargin] = useState(56);
+  const [rightMargin, setRightMargin] = useState(56);
+  const [isDraggingLeft, setIsDraggingLeft] = useState(false);
+  const [isDraggingRight, setIsDraggingRight] = useState(false);
+  const rulerRef = useRef<HTMLDivElement>(null);
+  const handleLeftMouseDown = () => {
+    setIsDraggingLeft(true);
+  };
+  const handleRightMouseDown = () => {
+    setIsDraggingRight(true);
+  };
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const PAGE_WIDTH = 816; // in pixels
+    const MINIMUM_SPACING = 100; // in pixels
+    if ((isDraggingLeft || isDraggingRight) && rulerRef.current) {
+      const container = rulerRef.current.querySelector('#ruler-container');
+      if (container) {
+        const containerReact = container.getBoundingClientRect();
+        const relativeX = e.clientX - containerReact.left;
+        const rawPosition = Math.max(0, Math.min(PAGE_WIDTH, relativeX));
+        if (isDraggingLeft) {
+          const maxLeftPosition = PAGE_WIDTH - rightMargin - MINIMUM_SPACING;
+          const newLeftPosition = Math.min(rawPosition, maxLeftPosition);
+          setLeftMargin(newLeftPosition); // TODO: make collaborative
+        } else if (isDraggingRight) {
+          const maxRightPosition = PAGE_WIDTH - (leftMargin + MINIMUM_SPACING);
+          const newRightPosition = Math.max(PAGE_WIDTH - rawPosition, 0);
+          const constrainedRightPosition = Math.min(
+            newRightPosition,
+            maxRightPosition
+          );
+          setRightMargin(constrainedRightPosition); // TODO: make collaborative
+        }
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDraggingLeft(false);
+    setIsDraggingRight(false);
+  };
+
+  const handleLeftDoubleClick = () => {
+    setLeftMargin(56); //info: reset to default margin
+  };
+
+  const handleRightDoubleClick = () => {
+    setRightMargin(56); //info: reset to default margin
+  };
+
   return (
-    <div className='h-6 border-b border-gray-300 items-end relative select-none print:hidden'>
+    <div
+      ref={rulerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseUp}
+      onMouseUp={handleMouseUp}
+      className='h-6 border-b border-gray-300 items-end relative select-none print:hidden'
+    >
       <div
         id='ruler-container'
         className='max-w-[816px] w-full mx-auto h-full relative'
       >
+        <Marker
+          position={leftMargin}
+          isLeft={true}
+          isDragging={isDraggingLeft}
+          onMouseDown={handleLeftMouseDown}
+          onDoubleClick={handleLeftDoubleClick}
+        />
+        <Marker
+          position={rightMargin}
+          isLeft={false}
+          isDragging={isDraggingRight}
+          onMouseDown={handleRightMouseDown}
+          onDoubleClick={handleRightDoubleClick}
+        />
         <div className='absolute inset-x-0 bottom-0 h-full'>
           <div className='relative h-full w-[816px]'>
             {markers.map((marker) => {
@@ -40,3 +112,42 @@ export default function Ruler() {
     </div>
   );
 }
+
+interface MarkerProps {
+  position: number;
+  isLeft: boolean;
+  isDragging: boolean;
+  onMouseDown: () => void;
+  onDoubleClick: () => void;
+}
+
+const Marker = ({
+  position,
+  isLeft,
+  isDragging,
+  onMouseDown,
+  onDoubleClick,
+}: MarkerProps) => {
+  return (
+    <div
+      className='absolute top-0 w-4 h-full cursor-ew-resize z-[5] group -ml-2'
+      style={{ [isLeft ? 'left' : 'right']: `${position}px` }}
+      onMouseDown={onMouseDown}
+      onDoubleClick={onDoubleClick}
+    >
+      <FaCaretDown className='absolute left-1/2 top-0 h-full fill-blue-500 transform -translate-x-1/2' />
+      <div
+        className='absolute left-1/2 top-4 transform -translate-x-1/2 transition-opacity duration-150'
+        style={{
+          height: '100vh',
+          width: '1px',
+          transform: 'scaleX(0.5)',
+          backgroundColor: isDragging
+            ? 'rgba(59, 130, 246, 0.5)'
+            : 'transparent',
+          display: isDragging ? 'block' : 'none',
+        }}
+      />
+    </div>
+  );
+};
