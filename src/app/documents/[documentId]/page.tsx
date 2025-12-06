@@ -1,4 +1,5 @@
 import Editor from './editor';
+import Navbar from './navbar';
 import Toolbar from './toolbar';
 
 interface IDocumentIdProps {
@@ -10,6 +11,7 @@ const DocumentIdPage = async ({ params }: IDocumentIdProps) => {
   console.log('Document ID:', documentId);
   return (
     <div className='min-h-screen'>
+      <Navbar />
       <Toolbar />
       <Editor />
     </div>
