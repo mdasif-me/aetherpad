@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import DocumentInput from './document-input';
 
 export default function Navbar() {
   return (
@@ -9,7 +10,7 @@ export default function Navbar() {
           <Image width={36} height={36} src={'/logo.svg'} alt='logo' />
         </Link>
         <div className='flex flex-col'>
-          {/* document-input */}
+          <DocumentInput />
           {/* menubar */}
         </div>
       </div>
