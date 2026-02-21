@@ -12,22 +12,22 @@ import { ReactNode } from 'react';
 import ScreenLoader from './screen-loader';
 
 export function ConvexClientProvider({ children }: { children: ReactNode }) {
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-  const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const convex_url = process.env.NEXT_PUBLIC_CONVEX_URL;
+  const clerk_key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
-  if (!convexUrl) {
+  if (!convex_url) {
     throw new Error('Missing NEXT_PUBLIC_CONVEX_URL in your .env file');
   }
-  if (!clerkKey) {
+  if (!clerk_key) {
     throw new Error(
       'Missing NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env file'
     );
   }
 
-  const convex = new ConvexReactClient(convexUrl);
+  const convex = new ConvexReactClient(convex_url);
 
   return (
-    <ClerkProvider publishableKey={clerkKey}>
+    <ClerkProvider publishableKey={clerk_key}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         <Authenticated>{children}</Authenticated>
         <Unauthenticated>
