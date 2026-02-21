@@ -73,11 +73,11 @@ const LineHeightButton = () => {
           <button
             className={cn(
               'flex items-center gap-x-2 px-2 py-1 rounded-sm hover:bg-neutral-200/80',
-              editor?.getAttributes('textStyle').lineHeight === value &&
+              editor?.getAttributes('paragraph').lineHeight === value &&
                 'bg-neutral-200/80'
             )}
             key={value}
-            onClick={() => editor?.chain().focus().setLineHeight(value).run()}
+            onClick={() => editor?.chain().focus().updateAttributes('paragraph', { lineHeight: value }).run()}
           >
             <span className='text-sm'>{label}</span>
           </button>
@@ -102,7 +102,7 @@ const FontSizeButton = () => {
   const updateFontSize = (newSize: string) => {
     const size = parseInt(newSize);
     if (!isNaN(size) && size > 0) {
-      editor?.chain().focus().setFontSize(`${size}px`).run();
+      editor?.chain().focus().setMark('textStyle', { fontSize: `${size}px` }).run();
       setFontSize(newSize);
       setInputValue(newSize);
       setIsEditing(false);
