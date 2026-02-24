@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -65,6 +66,16 @@ export default function DocumentsTable({
           </Table>
         </>
       )}
+      <div className='flex justify-center items-center'>
+        <Button
+          variant={'ghost'}
+          size={'sm'}
+          onClick={() => loadMore(5)}
+          disabled={status !== 'CanLoadMore'}
+        >
+          {status === 'CanLoadMore' ? 'Load More' : 'End of Results'}
+        </Button>
+      </div>
     </div>
   );
 }
