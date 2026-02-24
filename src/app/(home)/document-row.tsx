@@ -1,6 +1,7 @@
 import { TableCell, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
 import { Building2Icon, CircleUserIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { SiGoogledocs } from 'react-icons/si';
 import { Doc } from '../../../convex/_generated/dataModel';
 import DocumentMenu from './document-menu';
@@ -8,13 +9,14 @@ import DocumentMenu from './document-menu';
 export interface IDocumentRowProps {
   document: Doc<'documents'>;
 }
-
 export default function DocumentRow({ document }: IDocumentRowProps) {
-  const onNewTabClick = (id: string) => {
-    window.open(`/documents/${id}`, '_blank');
-  };
+  const router = useRouter();
+
   return (
-    <TableRow className='cursor-pointer'>
+    <TableRow
+      onClick={() => router.push(`/documents/${document._id}`)}
+      className='cursor-pointer'
+    >
       <TableCell className='w-[50px]'>
         <SiGoogledocs className='size-6 fill-blue-500' />
       </TableCell>
@@ -34,7 +36,7 @@ export default function DocumentRow({ document }: IDocumentRowProps) {
         <DocumentMenu
           documentId={document._id}
           title={document.title}
-          onNewTab={onNewTabClick}
+          onNewTab={() => window.open(`/documents/${document._id}`, '_blank')}
         />
       </TableCell>
     </TableRow>
