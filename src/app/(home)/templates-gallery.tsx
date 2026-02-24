@@ -8,10 +8,33 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
+import { useMutation } from 'convex/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { api } from '../../../convex/_generated/api';
 import { templates } from '../constants/templates';
 
 export default function TemplatesGallery() {
-  const isCreating = false;
+  const router = useRouter();
+  const create = useMutation(api.documents.create);
+  const [isCreating, setIsCreating] = useState(false);
+
+  const onTemplateClick = async (title: string, initialContent: string) => {
+    setIsCreating(true);
+
+    create({ title, initialContent })
+      .then((documentId) => {
+        router.push(`/documents/${documentId}`);
+      })
+      .catch((error) => {
+        console.error('Error creating document:', error);
+        setIsCreating(false);
+      })
+      .finally(() => {
+        setIsCreating(false);
+      });
+  };
+
   return (
     <div className='bg-[#f1f3f4]'>
       <div className='max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-y-4'>
@@ -38,7 +61,8 @@ export default function TemplatesGallery() {
                       backgroundRepeat: 'no-repeat',
                     }}
                     className='size-full hover:border-blue-500 rounded-sm border hover:bg-blue-50 transition flex flex-col items-center justify-center gapy-4 bg-white'
-                    onClick={() => {}}
+                    //TODO: Add proper initial content for each template
+                    onClick={() => onTemplateClick(template.label, '')}
                   />
                   <p className='text-sm font-medium truncate'>
                     {template.label}

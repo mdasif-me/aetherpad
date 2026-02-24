@@ -77,7 +77,13 @@ const LineHeightButton = () => {
                 'bg-neutral-200/80'
             )}
             key={value}
-            onClick={() => editor?.chain().focus().updateAttributes('paragraph', { lineHeight: value }).run()}
+            onClick={() =>
+              editor
+                ?.chain()
+                .focus()
+                .updateAttributes('paragraph', { lineHeight: value })
+                .run()
+            }
           >
             <span className='text-sm'>{label}</span>
           </button>
@@ -102,7 +108,11 @@ const FontSizeButton = () => {
   const updateFontSize = (newSize: string) => {
     const size = parseInt(newSize);
     if (!isNaN(size) && size > 0) {
-      editor?.chain().focus().setMark('textStyle', { fontSize: `${size}px` }).run();
+      editor
+        ?.chain()
+        .focus()
+        .setMark('textStyle', { fontSize: `${size}px` })
+        .run();
       setFontSize(newSize);
       setInputValue(newSize);
       setIsEditing(false);
@@ -531,7 +541,7 @@ const FontFamilyButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <button className='h-7 w-[120px] shrink-0 flex items-center justify-between rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm'>
           <span className='truncate'>
             {editor?.getAttributes('textStyle').fontFamily || 'Arial'}
