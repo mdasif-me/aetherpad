@@ -1,4 +1,4 @@
-import { UserButton } from '@clerk/clerk-react';
+import { OrganizationSwitcher, UserButton } from '@clerk/clerk-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SearchInput from './search-input';
@@ -12,7 +12,15 @@ export default function Navbar() {
         <h3 className='text-xl'>Aetherpad</h3>
       </div>
       <SearchInput />
-      <UserButton />
+      <div className='flex items-center gap-3 pl-6'>
+        <OrganizationSwitcher
+          afterCreateOrganizationUrl={'/'}
+          afterLeaveOrganizationUrl={'/'}
+          afterSelectOrganizationUrl={'/'}
+          afterSelectPersonalUrl={'/'}
+        />
+        <UserButton />
+      </div>
       <div />
     </nav>
   );

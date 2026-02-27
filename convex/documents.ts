@@ -2,6 +2,7 @@ import { paginationOptsValidator } from 'convex/server';
 import { ConvexError, v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 
+//=== create document ===//
 export const create = mutation({
   args: {
     title: v.optional(v.string()),
@@ -12,25 +13,44 @@ export const create = mutation({
     if (!user) {
       throw new ConvexError('User not authenticated');
     }
+    const orgId = (user.organization_id ?? undefined) as string | undefined;
     return await ctx.db.insert('documents', {
       title: title || 'Untitled Document',
       initialContent: initialContent,
+      organizationId: orgId,
       ownerId: user.subject,
     });
   },
 });
 
+//=== get documents ===//
 export const get = query({
   args: {
     paginationOpts: paginationOptsValidator,
     search: v.optional(v.string()),
   },
   handler: async (ctx, { search, paginationOpts }) => {
+    //=== check user ===//
     const user = await ctx.auth.getUserIdentity();
     if (!user) {
       throw new ConvexError('User not authenticated');
     }
+    const orgId = (user.organization_id ?? undefined) as string | undefined;
 
+    //=== search with organization ===//
+    if (search && orgId) {
+      return await ctx.db
+        .query('documents')
+        .withSearchIndex('search_title', (q) =>
+          q
+            .search('title', search)
+            .eq('ownerId', user.subject)
+            .eq('organizationId', orgId)
+        )
+        .paginate(paginationOpts);
+    }
+
+    //=== search without organization ===//
     if (search) {
       return await ctx.db
         .query('documents')
@@ -39,6 +59,16 @@ export const get = query({
         )
         .paginate(paginationOpts);
     }
+
+    //=== all docs inside organizations ===//
+    if (orgId) {
+      return await ctx.db
+        .query('documents')
+        .withIndex('by_organization_id', (q) => q.eq('organizationId', orgId))
+        .paginate(paginationOpts);
+    }
+
+    //=== all docs inside user ===//
     return await ctx.db
       .query('documents')
       .withIndex('by_owner_id', (q) => q.eq('ownerId', user.subject))
@@ -46,6 +76,7 @@ export const get = query({
   },
 });
 
+//=== remove document by id ===//
 export const removeById = mutation({
   args: {
     id: v.id('documents'),
@@ -66,6 +97,8 @@ export const removeById = mutation({
     await ctx.db.delete(id);
   },
 });
+
+//=== update document by id ===//
 export const updateById = mutation({
   args: {
     id: v.id('documents'),
