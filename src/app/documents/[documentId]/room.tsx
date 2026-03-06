@@ -1,0 +1,27 @@
+'use client';
+
+import ScreenLoader from '@/components/screen-loader';
+import {
+  ClientSideSuspense,
+  LiveblocksProvider,
+  RoomProvider,
+} from '@liveblocks/react/suspense';
+import { useParams } from 'next/navigation';
+import { ReactNode } from 'react';
+
+export function Room({ children }: { children: ReactNode }) {
+  const params = useParams();
+  return (
+    <LiveblocksProvider
+      publicApiKey={
+        'pk_dev_fGKwsEPO9zW_IQHVfB77FTWdi0QfhazuCLHlhgYrqIdrPbx12MsRj3koX0Ckd4CH'
+      }
+    >
+      <RoomProvider id={params.documentId as string}>
+        <ClientSideSuspense fallback={<ScreenLoader />}>
+          {children}
+        </ClientSideSuspense>
+      </RoomProvider>
+    </LiveblocksProvider>
+  );
+}
