@@ -73,11 +73,17 @@ const LineHeightButton = () => {
           <button
             className={cn(
               'flex items-center gap-x-2 px-2 py-1 rounded-sm hover:bg-neutral-200/80',
-              editor?.getAttributes('textStyle').lineHeight === value &&
+              editor?.getAttributes('paragraph').lineHeight === value &&
                 'bg-neutral-200/80'
             )}
             key={value}
-            onClick={() => editor?.chain().focus().setLineHeight(value).run()}
+            onClick={() =>
+              editor
+                ?.chain()
+                .focus()
+                .updateAttributes('paragraph', { lineHeight: value })
+                .run()
+            }
           >
             <span className='text-sm'>{label}</span>
           </button>
@@ -102,7 +108,11 @@ const FontSizeButton = () => {
   const updateFontSize = (newSize: string) => {
     const size = parseInt(newSize);
     if (!isNaN(size) && size > 0) {
-      editor?.chain().focus().setFontSize(`${size}px`).run();
+      editor
+        ?.chain()
+        .focus()
+        .setMark('textStyle', { fontSize: `${size}px` })
+        .run();
       setFontSize(newSize);
       setInputValue(newSize);
       setIsEditing(false);
@@ -531,7 +541,7 @@ const FontFamilyButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <button className='h-7 w-[120px] shrink-0 flex items-center justify-between rounded-sm hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm'>
           <span className='truncate'>
             {editor?.getAttributes('textStyle').fontFamily || 'Arial'}
@@ -639,8 +649,8 @@ const Toolbar = () => {
       {
         label: 'Comment',
         icon: MessageSquarePlusIcon,
-        isActive: false, // TODO: Enable this functionality
-        onClick: () => console.log('TODO: Add comment functionality'),
+        isActive: editor?.isActive('liveblocksCommentMark'),
+        onClick: () => editor?.chain().focus().addPendingComment().run(),
       },
       {
         label: 'List Todo',
